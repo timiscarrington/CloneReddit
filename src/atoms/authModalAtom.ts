@@ -12,6 +12,6 @@ const defualtModalState: AuthModalState = {
 }
 
 export const AuthModalState = atom<AuthModalState>({
-    key: 'authModalState',
+    key: 'AuthModalState',
     default: defualtModalState,
 });
