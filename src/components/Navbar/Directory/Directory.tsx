@@ -5,7 +5,7 @@ import {
 } from "@chakra-ui/react";
 import {TiHome} from 'react-icons/ti'
 import React from "react";
-
+import Communities from "./Communities";
 
 
 const Directory: React.FC = () => {
@@ -30,7 +30,7 @@ const Directory: React.FC = () => {
           </Flex>
       </MenuButton>
       <MenuList>
-        {/* <Communities /> */}
+        <Communities />
         Communities
       </MenuList>
     </Menu>
