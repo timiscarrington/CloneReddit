@@ -4,10 +4,10 @@ import { atom } from 'recoil';
 export interface Community {
     id: string;
     creatorId : string;
-    numberOfmembers: number;
+    numberOfMembers: number;
     privacyType: 'public' | 'restricted' | 'private';
     createdAt?: Timestamp;
-    imageUrl?: string;
+    imageURL?: string;
 }
 
 export interface CommunitySnippet {
@@ -18,7 +18,7 @@ export interface CommunitySnippet {
 
 interface CommunityState {
     mySnippets: CommunitySnippet[];
-    // visitedCommunities
+    currentCommunity?: Community;
 }
 const defaultCommunityState: CommunityState = {
     mySnippets: []
