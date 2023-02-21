@@ -26,13 +26,16 @@ const Posts: React.FC<PostsProps> = ({ communityData }) => {
 
   const getPosts = async () => {
     try {
-        setLoading(true);
-      const postQuery = query(
+      setLoading(true);
+      // get posts for this community
+      const postsQuery = query(
         collection(firestore, "posts"),
         where("communityId", "==", communityData.id),
         orderBy("createdAt", "desc")
       );
-      const postDocs = await getDocs(postQuery);
+      const postDocs = await getDocs(postsQuery);
+
+      // Store in post state
       const posts = postDocs.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       setPostStateValue((prev) => ({
         ...prev,
@@ -43,34 +46,36 @@ const Posts: React.FC<PostsProps> = ({ communityData }) => {
     } catch (error: any) {
       console.log("getPosts error", error.message);
     }
-    setLoading(false)
+    setLoading(false);
   };
 
   useEffect(() => {
     getPosts();
-  }, []);
+  }, [communityData]);
 
   return (
     <>
-    {loading ? (
+      {loading ? (
         <PostLoader />
-    ) : (
-      <Stack>
-      {postStateValue.posts.map((item) => (
-          <PostItem
-          key={item.id}
-          post={item}
-          userIsCreator={user?.uid === item.creatorId}
-          userVoteValue={undefined}
-          onVote={onVote}
-          onSelectPost={onSelectPost}
-          onDeletePost={onDeletePost}
-          />
+      ) : (
+        <Stack>
+          {postStateValue.posts.map((item) => (
+            <PostItem
+              key={item.id}
+              post={item}
+              userIsCreator={user?.uid === item.creatorId}
+              userVoteValue={
+                postStateValue.postVotes.find((vote) => vote.postId === item.id)
+                  ?.voteValue
+              }
+              onVote={onVote}
+              onSelectPost={onSelectPost}
+              onDeletePost={onDeletePost}
+            />
           ))}
-    </Stack>
-    )}
-          </>
-
+        </Stack>
+      )}
+    </>
   );
 };
 export default Posts;
