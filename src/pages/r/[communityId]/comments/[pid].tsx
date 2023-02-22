@@ -9,6 +9,8 @@ import { useRouter } from "next/router";
 import { doc, getDoc } from "firebase/firestore";
 import About from "@/src/components/Community/About";
 import useCommunityData from "@/src/hooks/useCommunityData";
+import Comments from "@/src/components/Posts/Comments/Comments";
+import { User } from "firebase/auth";
 
 const PostPage: React.FC = () => {
   const [user] = useAuthState(auth);
@@ -53,7 +55,11 @@ const PostPage: React.FC = () => {
             userIsCreator={user?.uid === postStateValue.selectedPost?.creatorId}
           />
         )}
-        {/* Comments */}
+        <Comments
+          user={user as User}
+          selectedPost={postStateValue.selectedPost}
+          communityId={postStateValue.selectedPost?.communityId as string}
+        />
       </>
       <>
         {communityStateValue.currentCommunity && (
