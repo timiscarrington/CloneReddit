@@ -16,7 +16,7 @@ type CommunityPageProps = {
   communityData: Community;
 };
 
-const index: React.FC<CommunityPageProps> = ({ communityData }) => {
+const Index: React.FC<CommunityPageProps> = ({ communityData }) => {
   console.log("here is data", communityData);
   const setCommunityStateValue = useSetRecoilState(communityState);
 
@@ -26,7 +26,7 @@ const index: React.FC<CommunityPageProps> = ({ communityData }) => {
       currentCommunity: communityData,
     }));
   }, [communityData]);
-  
+
   if (!communityData) {
     return <NotFound />;
   }
@@ -71,4 +71,4 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 }
 
-export default index;
+export default Index;
