@@ -1,4 +1,5 @@
 import { auth, firestore } from "@/src/firebase/clientApp";
+import useDirectory from "@/src/hooks/useDirectory";
 import {
   Button,
   Modal,
@@ -16,7 +17,14 @@ import {
   Flex,
   Icon,
 } from "@chakra-ui/react";
-import { doc, getDoc, runTransaction, serverTimestamp, setDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  runTransaction,
+  serverTimestamp,
+  setDoc,
+} from "firebase/firestore";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { BsFillEyeFill, BsFillPersonFill } from "react-icons/bs";
@@ -31,12 +39,14 @@ const CreateCommunity: React.FC<CreateCommunityProps> = ({
   open,
   handleClose,
 }) => {
-    const [user] = useAuthState(auth);
+  const [user] = useAuthState(auth);
   const [communityName, setCommunityName] = useState("");
   const [charsRemaining, setCharsRemaining] = useState(21);
   const [communityType, setCommunityType] = useState("public");
   const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const { toggleMenuOpen } = useDirectory();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.value.length > 21) return;
@@ -64,33 +74,39 @@ const CreateCommunity: React.FC<CreateCommunityProps> = ({
 
     setLoading(true);
     try {
-    const communityDocRef = doc(firestore, "communities", communityName);
+      const communityDocRef = doc(firestore, "communities", communityName);
 
-    await runTransaction(firestore, async (transaction) => {
-            //Check if community exsists in db
-    const communityDoc = await transaction.get(communityDocRef);
-    if (communityDoc.exists()) {
-      throw new Error(`Sorry, r/${communityName} is taken. Try another`)
-    }
+      await runTransaction(firestore, async (transaction) => {
+        //Check if community exsists in db
+        const communityDoc = await transaction.get(communityDocRef);
+        if (communityDoc.exists()) {
+          throw new Error(`Sorry, r/${communityName} is taken. Try another`);
+        }
 
         //Create community
         transaction.set(communityDocRef, {
-            creatorId: user?.uid,
-            createdAt: serverTimestamp(),
-            numberOfMembers: 1,
-            privacyType: communityType,
-        }); 
+          creatorId: user?.uid,
+          createdAt: serverTimestamp(),
+          numberOfMembers: 1,
+          privacyType: communityType,
+        });
 
         //create community snippet on that user
-        transaction.set(doc(firestore, `users/${user?.uid}/communitySnippets`, communityName), {
+        transaction.set(
+          doc(firestore, `users/${user?.uid}/communitySnippets`, communityName),
+          {
             communityId: communityName,
             isModerator: true,
+          }
+        );
+      });
 
-        })
-    })
+      handleClose();
+      toggleMenuOpen();
+      router.push(`r/${communityName}`);
     } catch (error: any) {
-        console.log('handleCreateCommunity errr', error)
-        setError(error.message)
+      console.log("handleCreateCommunity errr", error);
+      setError(error.message);
     }
     setLoading(false);
   };
@@ -211,7 +227,11 @@ const CreateCommunity: React.FC<CreateCommunityProps> = ({
             >
               Cancel
             </Button>
-            <Button height="30px" onClick={handleCreateCommunity} isLoading={loading}>
+            <Button
+              height="30px"
+              onClick={handleCreateCommunity}
+              isLoading={loading}
+            >
               Create Community
             </Button>
           </ModalFooter>
