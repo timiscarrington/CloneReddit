@@ -19,7 +19,7 @@ import {
     where,
     writeBatch,
   } from "firebase/firestore";
-  import React, { useEffect, useState } from "react";
+  import React, { useCallback, useEffect, useState } from "react";
   import { useSetRecoilState } from "recoil";
   import { Post, postState } from "../../../atoms/postsAtom";
   import { firestore } from "../../../firebase/clientApp";
@@ -124,7 +124,7 @@ import {
       setLoadingDeleteId("");
     };
   
-    const getPostComments = async () => {
+    const getPostComments = useCallback(async () => {
       try {
         const commentsQuery = query(
           collection(firestore, "comments"),
@@ -141,12 +141,12 @@ import {
         console.log("getPostComments error", error);
       }
       setFetchLoading(false);
-    };
-  
+    }, [selectedPost]);
+    
     useEffect(() => {
       if (!selectedPost) return;
       getPostComments();
-    }, [selectedPost]);
+    }, [getPostComments, selectedPost]);
   
     return (
       <Box bg="white" borderRadius="0px 0px 4px 4px" p={2}>

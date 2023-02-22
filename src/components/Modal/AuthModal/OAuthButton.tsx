@@ -10,7 +10,7 @@ const OAuthButton:React.FC = () => {
     return (
         <Flex direction="column" width='100%' mb={4}>
             <Button variant='oauth' mb={2} isLoading={loading} onClick={()=> signInWithGoogle()}>
-                <Image src='/images/googlelogo.png' height='20px' mr={4} alt='google sign in/>
+                <Image src='/images/googlelogo.png' height='20px' mr={4} alt='google sign in'/>
                 Continue with Google
             </Button>
             {error && <Text> {error.message} </Text>}
