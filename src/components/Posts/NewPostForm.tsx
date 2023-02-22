@@ -13,7 +13,9 @@ import { useRouter } from "next/router";
 import {
   addDoc,
   collection,
+  doc,
   serverTimestamp,
+  setDoc,
   Timestamp,
   updateDoc,
 } from "firebase/firestore";
@@ -66,8 +68,8 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
 
   const handleCreatePost = async () => {
     const { communityId } = router.query;
-
-    //create new post object => type Post
+  
+    // Create new post object => type Post
     const newPost: Post = {
       communityId: communityId as string,
       communityImageURL: communityImageURL || "",
@@ -79,32 +81,34 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
       voteStatus: 0,
       createdAt: serverTimestamp() as Timestamp,
     };
-
-    //store the post in db
+  
+    // Store the post in the database and get the new ID
     setLoading(true);
     try {
-      const postDocRef = await addDoc(collection(firestore, "posts"), newPost);
-
-      //check for selectedFile
+      const postRef = await addDoc(collection(firestore, "posts"), newPost);
+      const postId = postRef.id; // Get the new ID from the document reference
+  
+      // Check for selectedFile
       if (selectedFile) {
-        //store in storage => getDownloadURL ( return ImageURL)
-        const imageRef = ref(storage, `posts/${postDocRef.id}/image`);
+        // Store in storage => getDownloadURL ( return ImageURL)
+        const imageRef = ref(storage, `posts/${postId}/image`);
         await uploadString(imageRef, selectedFile, "data_url");
         const downloadURL = await getDownloadURL(imageRef);
-
-        //update post doc by adding imageURL
-        await updateDoc(postDocRef, {
+  
+        // Update post doc by adding imageURL
+        await updateDoc(postRef, {
           imageURL: downloadURL,
         });
       }
-      //redirect the user back to the communityPage using the router
+      // Redirect the user back to the communityPage using the router
       router.back();
     } catch (error: any) {
-      console.log("handCreatePost error", error.message);
+      console.log("handleCreatePost error", error.message);
       setError(true);
     }
     setLoading(false);
   };
+  
 
   const onTextChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
