@@ -85,6 +85,9 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
     try {
       const postDocRef = await addDoc(collection(firestore, "posts"), newPost);
 
+       //update the document to include the generated ID
+    await updateDoc(postDocRef, { id: postDocRef.id });
+
       //check for selectedFile
       if (selectedFile) {
         //store in storage => getDownloadURL ( return ImageURL)
