@@ -133,6 +133,7 @@ const PostItem: React.FC<PostItemProps> = ({
                 {post.communityImageURL ? (
                   <Image
                     src={post.communityImageURL}
+                    alt='subreddit image'
                     borderRadius="full"
                     boxSize="18px"
                     mr={2}
