@@ -4,7 +4,7 @@ import { BiPoll } from "react-icons/bi";
 import { BsLink45Deg, BsMic } from "react-icons/bs";
 import { IoDocumentText, IoImageOutline } from "react-icons/io5";
 import { AiFillCloseCircle } from "react-icons/ai";
-import TabItem from "./TabItem";
+import { TabItem as ExternalTabItem } from "./TabItem";
 import TextInputs from "./PostForm/TextInputs";
 import ImageUpload from "./PostForm/ImageUpload";
 import { Post } from "@/src/atoms/postsAtom";
@@ -68,15 +68,16 @@ const { selectedFile, setSelectedFile, onSelectFile} = useSelectFile();
 
 //create new post object => type Post
 const newPost: Post = {
-    communityId: communityId as string,
-    communityImageURL: communityImageURL || '',
-    creatorId: user.uid,
-    creatorDisplayName: user.email!.split('@')[0],
-    title: textInputs.title,
-    body: textInputs.body,
-    numberOfComments: 0,
-    voteStatus: 0,
-    createdAt: serverTimestamp() as Timestamp
+  communityId: communityId as string,
+  communityImageURL: communityImageURL || '',
+  creatorId: user.uid,
+  creatorDisplayName: user.email!.split('@')[0],
+  title: textInputs.title,
+  body: textInputs.body,
+  numberOfComments: 0,
+  voteStatus: 0,
+  createdAt: serverTimestamp() as Timestamp,
+  id: ""
 };
 
 //store the post in db
@@ -123,7 +124,7 @@ setLoading(false)
     <Flex direction="column" bg="white" borderRadius={4} mt={2}>
       <Flex width="100%">
         {formTabs.map((item) => (
-          <TabItem
+          <ExternalTabItem
             key={item.title}
             item={item}
             selected={item.title === selectedTab}
