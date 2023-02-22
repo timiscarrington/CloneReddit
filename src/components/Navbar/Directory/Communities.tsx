@@ -1,5 +1,5 @@
 import { Box, Flex, Icon, MenuItem, Text } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import CreateCommunityModal from "../../Modal/Create Communit/CreateCommunityModal";
 import { GrAdd } from "react-icons/gr";
 import { useRecoilValue } from "recoil";
@@ -17,6 +17,7 @@ const Communities: React.FC<CommunitiesProps> = () => {
     <>
       <CreateCommunityModal open={open} handleClose={() => setOpen(false)} />
       <Box mt={3} mb={4}>
+        <>
         <Text pl={3} mb={1} fontSize="7pt" fontWeight={500} color="gray.500">
           MODERATING
         </Text>
@@ -33,8 +34,11 @@ const Communities: React.FC<CommunitiesProps> = () => {
               imageURL={snippet.imageURL}
             />
           ))}
+          </>
       </Box>
+      
       <Box mt={3} mb={4}>
+        <>
         <Text pl={3} mb={1} fontSize="7pt" fontWeight={500} color="gray.500">
           MY COMMUNITIES
         </Text>
@@ -43,7 +47,7 @@ const Communities: React.FC<CommunitiesProps> = () => {
           fontSize="10pt"
           _hover={{ bg: "gray.100" }}
           onClick={() => setOpen(true)}
-        >
+          >
           <Flex>
             <Icon fontSize="20" mr={2} as={GrAdd} />
             Create Community
@@ -52,15 +56,17 @@ const Communities: React.FC<CommunitiesProps> = () => {
         {console.log("mysnip", mySnippets)}
         {mySnippets.map((snippet) => (
           <MenuListItem
-            key={snippet.communityId}
-            icon={FaReddit}
-            displayText={`r/${snippet.communityId}`}
-            link={`/r/${snippet.communityId}`}
-            iconColor="blue.500"
-            imageURL={snippet.imageURL}
+          key={snippet.communityId}
+          icon={FaReddit}
+          displayText={`r/${snippet.communityId}`}
+          link={`/r/${snippet.communityId}`}
+          iconColor="blue.500"
+          imageURL={snippet.imageURL}
           />
-        ))}
+          ))}
+          </>
       </Box>
+          
     </>
   );
 };
